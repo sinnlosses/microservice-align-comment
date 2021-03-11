@@ -2,29 +2,30 @@
  * 変換処理を実行する.
  */
 function execute() {
-    var spaceNum = Number(getDocumentId("spaceNum").value);
-    var inputText = getDocumentId("inputTextarea").value;
-    var commentSymbol = getDocumentId("commentSymbol").value == "" ? "//" : getDocumentId("commentSymbol").value;
-    var inputTexts = inputText.split("\n");
-    var maxLengthWithoutComment = getMaxLengthWithoutComment(inputTexts, commentSymbol);
-    for (var i = 0; i < inputTexts.length; i++) {
+    var spaceNum = Number(getHtmlInputElementById("spaceNum").value);
+    var inputText = getHtmlInputElementById("inputTextarea").value;
+    var commentSymbol = getHtmlInputElementById("commentSymbol").value == "" ? "//" : getHtmlInputElementById("commentSymbol").value;
+    var inputRows = inputText.split("\n");
+    var maxLengthWithoutComment = getMaxLengthWithoutComment(inputRows, commentSymbol);
+    for (var i = 0; i < inputRows.length; i++) {
         // 対象の行でない場合は除く
-        if (!isTargetRow(inputTexts[i], commentSymbol)) {
+        if (!isTargetRow(inputRows[i], commentSymbol)) {
             continue;
         }
-        var space = " ".repeat((maxLengthWithoutComment - getLengthWithoutComment(inputTexts[i], commentSymbol)) + spaceNum);
-        var splitedWithComment = inputTexts[i].split(commentSymbol);
-        splitedWithComment[splitedWithComment.length - 2] = splitedWithComment[splitedWithComment.length - 2].trim() + space;
-        inputTexts[i] = splitedWithComment.join(commentSymbol);
+        var lengthWithoutComment = getLengthWithoutComment(inputRows[i], commentSymbol);
+        var spaceNumToAdd = " ".repeat((maxLengthWithoutComment - lengthWithoutComment) + spaceNum);
+        var splitedWithComment = inputRows[i].split(commentSymbol);
+        splitedWithComment[splitedWithComment.length - 2] = splitedWithComment[splitedWithComment.length - 2].trim() + spaceNumToAdd;
+        inputRows[i] = splitedWithComment.join(commentSymbol);
     }
     var outputTextarea = document.getElementById("outputTextarea");
-    outputTextarea.value = inputTexts.join("\n");
+    outputTextarea.value = inputRows.join("\n");
 }
 /**
  * 指定したIDを持つエレメントを返す.
  * @param id エレメントID
  */
-function getDocumentId(id) {
+function getHtmlInputElementById(id) {
     return document.getElementById(id);
 }
 /**
@@ -69,5 +70,5 @@ function getMaxLengthWithoutComment(inputTexts, commentSymbol) {
 function getLengthWithoutComment(inputText, commentSymbol) {
     var splitedWithComment = inputText.split(commentSymbol);
     var splitedWithoutComment = splitedWithComment.slice(0, splitedWithComment.length - 1);
-    return splitedWithoutComment.join(commentSymbol).length;
+    return splitedWithoutComment.join(commentSymbol).trim().length;
 }
