@@ -34,7 +34,7 @@ function getHtmlInputElementById(id) {
  * @param commentSymbol コメント文字列
  */
 function isTargetRow(text, commentSymbol) {
-    if (!text.match(commentSymbol)) {
+    if (!text.includes(commentSymbol)) {
         return false;
     }
     if (text.trim().startsWith(commentSymbol)) {
